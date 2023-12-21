@@ -2,7 +2,8 @@
 This is private project.
 
 
-## Mysql Install
+## :rocket: Mysql Install
+---
 ##### Install
 ```
 brew install mysql
@@ -43,6 +44,18 @@ mysql> CREATE TABLE IF NOT EXISTS `dust_data` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `date_time` DATETIME NULL DEFAULT NULL,
   `measured_dust` FLOAT DEFAULT NULL,
+  `PM1_0` FLOAT DEFAULT NULL,
+  `PM2_5` FLOAT DEFAULT NULL,
+  `PM10_0` FLOAT DEFAULT NULL,
+  `PM1_0_ATM` FLOAT DEFAULT NULL,
+  `PM2_5_ATM` FLOAT DEFAULT NULL,
+  `PM10_0_ATM` FLOAT DEFAULT NULL,
+  `PCNT_0_3` FLOAT DEFAULT NULL,
+  `PCNT_0_5` FLOAT DEFAULT NULL,
+  `PCNT_1_0` FLOAT DEFAULT NULL,
+  `PCNT_2_5` FLOAT DEFAULT NULL,
+  `PCNT_5_0` FLOAT DEFAULT NULL,
+  `PCNT_10_0` FLOAT DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) CHARSET=utf8;
 mysql> CREATE TABLE IF NOT EXISTS `pres_data` (
@@ -60,7 +73,8 @@ mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'thermal12
 mysql> FLUSH PRIVILEGES;
 mysql> QUIT
 ```
-## 3. Mosquitto MQTT broker
+## :rocket: Install Mosquitto MQTT broker
+---
 #####  Install
 ```
 brew install mosquitto
@@ -99,7 +113,8 @@ mosquitto_sub -h $MQTT_HOST -p $MQTT_PORT -t $SUB_TOPIC -u $MQTT_USER -P $MQTT_P
 mosquitto_pub -h $MQTT_HOST -p $MQTT_PORT -t $PUB_TOPIC -u $MQTT_USER -P $MQTT_PASSWORD
 ```
 
-## 서버 다운로드 및 실행
+## :rocket: 서버 다운로드 및 실행
+---
 #### 설정파일 수정
 ```
 기기 설정파일  : src/config.json
@@ -119,8 +134,8 @@ brew services restart mysql
 npm start
 ```
 
-## Actuator Control
-
+## :rocket: Actuator Control
+---
 > 지정한 방향(direction)으로 지정한 시간(duration-밀리초)동안 작동하고 정지
 ```
 direction : forward|backward|stop, default: stop
@@ -140,7 +155,8 @@ GET: direction=forward&duration=1200&limit=nc
 TOPIC  : cmd/actuator
 PAYLOAD: direction=forward&duration=1200&limit=nc
 ```
-## Fan Control
+## :rocket: Fan Control
+---
 ```
 power: on|off, default: off
 speed: 1|2|3|4|5, default: 0
@@ -156,9 +172,34 @@ GET: power=on&speed=2
 TOPIC: cmd/fan
 PAYLOAD: power=on&speed=2
 ```
+## :rocket: 센서값 단위
+---
+> 온도 : ℃
+> 습도 : %
+> 이산화탄소 : ppm
+```
+measured_dust 컬럼에 공기질지표 AQI 값이 저장됩니다.
+Dictionary Key별 측정 데이터는 아래와 같습니다.
 
-
-## Config file
+Key          | Description |                                               
+:------------|:------------------------------------------------------------
+measured_dust| Air Quality Index (좋음,나쁨 등)
+PM1_0        | PM 1.0(1마이크로미터 입자) 농도 마이크로그램(μg)/m3 (공장세팅환경)           
+PM2_5        | PM 2.5(2.5마이크로미터 입자) 농도 마이크로그램(μg)/m3 (공장세팅)             
+PM10_0       | PM 10(10마이크로미터 입자) 농도 마이크로그램(μg)/m3 (공장세팅환경)            
+PM1_0_ATM    | PM 1.0(1마이크로미터 입자) 농도 마이크로그램(μg)/m3 (일반대기 환경)       
+PM2_5_ATM    | PM 2.5(2.5마이크로미터 입자) 농도 마이크로그램(μg)/m3 (일반대기 환경)       
+PM10_0_ATM   | PM 10(10마이크로미터 입자) 농도 마이크로그램(μg)/m3 (일반대기 환경)        
+PCNT_0_3     | 직경 0.3 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+PCNT_0_5     | 직경 0.5 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+PCNT_1_0     | 직경 1.0 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+PCNT_2_5     | 직경 2.5 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+PCNT_5_0     | 직경 5.0 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
+```
+공기질지표(Air Quality Index) 관련 자료는 [위키피디아 참조](https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI)
+## :rocket: Config file
+---
 ```
 {
     // 센서값 업데이트 주기 (초)
@@ -189,7 +230,7 @@ PAYLOAD: power=on&speed=2
     },
     // 액추에이터 모터 회전속도 설정 (Hz)
     "actuator": {
-        "max_freq": "NC"
+        "max_freq": 1000
     }
 
 }
