@@ -7,37 +7,22 @@
         "humidity": 60
     },
     "connection": {
-        "mqtt_host": "192.168.0.30",
+        "mqtt_host": "192.168.0.101",
         "mqtt_port": 1883,
-        "mqtt_id": "sensor",
+        "mqtt_id": "mqtt_user",
         "mqtt_password": "pass1234",
-        "wlan_ssid": "Kmong",
-        "wlan_password": "12345678",
-        "config_file": "http://192.168.0.30/config.json"
-    },
-    "ip_address": {
-        "host": {
-            "ip": "192.168.0.30",
-            "port": 5000
-        },
-        "sensor_board": {
-            "ip": "192.168.0.101",
-            "port": 5000
-        },
-        "actuator_board": {
-            "ip": "192.168.0.102",
-            "port": 5000
-        }
+        "wifi_ssid": "thermal-AP",
+        "wifi_password": "thermal1215",
+        "config_file": "http://192.168.0.101/src/config.json"
     },
     "fan": {
-        "speed_1": 1000,
-        "speed_2": 5000,
-        "speed_3": 10000,
+        "speed_1_freq": 1000,
+        "speed_2_freq": 5000,
+        "speed_3_freq": 10000,
+        "speed_4_freq": 15000,
+        "speed_5_freq": 20000
     },
     "actuator": {
-        "limit_close": "NC",
-        "limit_open": "NO",
-        "stroke_open": 130,
-        "stroke_close": 0
+        "max_freq": "NC"
     }
 }
