@@ -1,9 +1,9 @@
 # MQTT host server for sensor nodes
-This is private project.
+> [!CAUTION]
+> This is private project, working under the specific environment.
 
 
 ## :rocket: Mysql Install
----
 ##### Install
 ```
 brew install mysql
@@ -74,7 +74,6 @@ mysql> FLUSH PRIVILEGES;
 mysql> QUIT
 ```
 ## :rocket: Install Mosquitto MQTT broker
----
 #####  Install
 ```
 brew install mosquitto
@@ -114,7 +113,6 @@ mosquitto_pub -h $MQTT_HOST -p $MQTT_PORT -t $PUB_TOPIC -u $MQTT_USER -P $MQTT_P
 ```
 
 ## :rocket: 서버 다운로드 및 실행
----
 #### 설정파일 수정
 ```
 기기 설정파일  : src/config.json
@@ -135,7 +133,6 @@ npm start
 ```
 
 ## :rocket: Actuator Control
----
 > 지정한 방향(direction)으로 지정한 시간(duration-밀리초)동안 작동하고 정지
 ```
 direction : forward|backward|stop, default: stop
@@ -156,7 +153,6 @@ TOPIC  : cmd/actuator
 PAYLOAD: direction=forward&duration=1200&limit=nc
 ```
 ## :rocket: Fan Control
----
 ```
 power: on|off, default: off
 speed: 1|2|3|4|5, default: 0
@@ -173,7 +169,6 @@ TOPIC: cmd/fan
 PAYLOAD: power=on&speed=2
 ```
 ## :rocket: 센서값 단위
----
 > 온도 : ℃
 > 습도 : %
 > 이산화탄소 : ppm
@@ -199,7 +194,6 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
 ```
 공기질지표(Air Quality Index) 관련 자료는 [위키피디아 참조](https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI)
 ## :rocket: Config file
----
 ```
 {
     // 센서값 업데이트 주기 (초)
@@ -235,5 +229,22 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
 
 }
 ```
+## 디바이스(센서보드, 액츄에이터보드) 설정 방법
+> [!NOTE]
+> 
+> * 디바이스는 전원ON시 지정된 설정파일(config.json)을 기기로 다운로드 합니다.
+> * 커넥션에러(WiFi,MQTT) 또는 설정파일 다운로드 에러시에 디바이스는 자동으로 설정모드(AP)로 진입합니다.
+> * 서버의 WiFi 리스트에 설정이 필요한 디바이스가 표시되며, 해당 WiFi로 연결시 자동으로 설정창이 나옵니다.
+> * 설정 완료 후 Board Restart를 눌러 디바이스를 재시작하면 새로운 WiFi 및 설정파일이 적용 됩니다.
+
+> [!TIP]
+> 
+> * 디바이스 설정시 열려있는 브라우져(사파리,크롬) 닫고 진행 하시면 좋습니다.
+> * 설정창이 뜨지 않거나 닫힐경우, 다른 Wifi 접속후에 다시 해당 디바이스AP로 접속하시면 정상 작동 됩니다.
+> * 스마트폰 에서도 설정 가능합니다.(스마트폰 와이파이 리스트에서 해당 디바이스 선택)
+<img width="813" alt="setting" src="https://github.com/sam0910/kmong-sensor-host/assets/9714538/ffca0318-abd0-45e0-bcdb-43900c2f4f96">
+
+
+
 
 
