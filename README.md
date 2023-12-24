@@ -15,17 +15,15 @@ Enter password for user root: thermal1215@R
 Disallow root login remotely? [Y/n] n
 Reload privilege tables now? [Y/n] y
 ```
-##### Create database and tables
-> [!NOTE]
-> * dust_data 테이블에 추가 컬럼(RAW DATA 관련) 있습니다.
-> * [mysql_batch.sql](./mysql_batch.sql) 파일 참조 하셔서 테이블 생성 하세요.
+##### 테이블 자동 생성 스크립트
 ```
-// 테이블 자동 생성 스크립트, 결과는 mysql_batch.log 파일에 저장됩니다.
 > mysql -u root -p < mysql_batch.sql > mysql_batch.log
 Enter password:🔑thermal1215@R
 ```
 > [!NOTE]
-> * [config/config_mysql.js](config/config_mysql.sql)의 접속 계정에 맞게 테이블 접근 권한 설정 요망. 
+> * 'dust_data' 테이블에 추가 컬럼(RAW DATA 관련) 있습니다.
+> * [mysql_batch.sql](./mysql_batch.sql) 파일 참조 하셔서 테이블 생성 하세요.
+> * [config/config_mysql.js](config/config_mysql.js) 접속 계정에 맞게 테이블 접근 권한 설정 해주세요.
 
 ## :rocket: Install Mosquitto MQTT broker
 #####  Install
@@ -103,6 +101,8 @@ npm start
 > [!NOTE]
 > * 지정한 방향(direction)으로 지정한 시간(duration-밀리초)동안 작동하고 정지
 > * 속도는 5mm/s @ 100Hz (제조사 스펙상 최대 속도 6mm/s)
+> * direction=stop(정지명령) 일때 duration, limit 값은 무시 또는 미지정 가능.
+> * forward(전진), backward(후진) 명령시 duration, limit 값 필수 지정
 
 
 > [!WARNING]
@@ -128,10 +128,11 @@ GET: direction=forward&duration=1200&limit=nc
 TOPIC  : cmd/actuator
 PAYLOAD: direction=forward&duration=1200&limit=nc
 ```
-> [!NOTE]
-> * direction=stop(정지명령) 일때 duration, limit 값은 무시 또는 미지정 가능.
-> * forward(전진), backward(후진) 명령시 duration, limit 값 필수 지정
+
 ## :rocket: Fan Control
+> [!NOTE]
+> * power=on 일때 speed 값 필수 지정
+> * power=off 일때 speed 값은 무시 또는 미지정 가능.
 ```
 power: on|off, default: off
 speed: 1|2|3|4|5, default: 0
@@ -147,13 +148,13 @@ GET: power=on&speed=2
 TOPIC: cmd/fan
 PAYLOAD: power=on&speed=2
 ```
-> [!NOTE]
-> * power=on 일때 speed 값 필수 지정
-> * power=off 일때 speed 값은 무시 또는 미지정 가능.
+
 ## :rocket: 센서값 단위
+> [!NOTE]
 > - 온도 : ℃
 > - 습도 : %
 > - 이산화탄소 : ppm
+#### dust_data 테이블 추가 컬럼 설명
 ```
 measured_dust 컬럼에 공기질지표 AQI 값이 저장됩니다.
 Dictionary Key별 측정 데이터는 아래와 같습니다.
@@ -175,7 +176,7 @@ PCNT_5_0     | 직경 5.0 마이크로 미터(μm) 이상 입자수, 0.1 리터 
 PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터 공기 당
 ```
 공기질지표(Air Quality Index) 관련 자료는 [위키피디아 참조](https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI)
-## :rocket: Config file
+## :rocket: 기기로 다운로드 되는 설정파일(config.json)
 ```
 {
     // 센서값 업데이트 주기 (초)
@@ -216,7 +217,7 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
 > [!NOTE]
 > 
 > * 디바이스는 전원ON시 지정된 설정파일(config.json)을 기기로 다운로드 합니다.
-> * 커넥션에러(WiFi,MQTT) 또는 설정파일 다운로드 에러시에 디바이스는 자동으로 설정모드(AP)로 진입합니다.
+> * <ins>커넥션에러(WiFi,MQTT)</ins> 또는 <ins>설정파일 다운로드 에러</ins>시에 디바이스는 자동으로 설정모드(AP)로 진입합니다.
 > * 서버의 WiFi 리스트에 설정이 필요한 디바이스가 표시되며, 해당 WiFi로 연결시 자동으로 설정창이 나옵니다.
 > * 설정 완료 후 Board Restart를 눌러 디바이스를 재시작하면 새로운 WiFi 및 설정파일이 적용 됩니다.
 
