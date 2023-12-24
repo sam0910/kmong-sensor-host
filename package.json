@@ -5,11 +5,14 @@
     "license": "MIT",
     "scripts": {
         "mysql": "brew services restart mysql && brew services restart mosquitto",
+        "mqtt": "brew services restart mysql && brew services restart mosquitto",
         "start": "node ./src/index.js"
     },
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.18.2",
+        "moment": "^2.29.4",
+        "moment-timezone": "^0.5.43",
         "mqtt": "^5.3.3",
         "mysql": "^2.18.1"
     }

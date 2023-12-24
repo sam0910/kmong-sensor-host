@@ -2,9 +2,9 @@
     "update_interval": {
         "dust": 60,
         "co2": 60,
-        "barometer": 60,
-        "temperature": 60,
-        "humidity": 60
+        "pres": 60,
+        "temp": 60,
+        "humi": 60
     },
     "connection": {
         "mqtt_host": "192.168.0.30",

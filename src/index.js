@@ -10,6 +10,8 @@ const mysql = require('mysql');
 const dbconfig = require('../config/config_mysql.js');
 const mqtt_config = require('../config/config_mqtt.js');
 const connection = mysql.createConnection(dbconfig);
+const moment = require('moment-timezone');
+
 connection.connect();
 app.use(cors());
 
@@ -91,24 +93,39 @@ client.on("connect", () => {
     client.subscribe(mqtt_config.topic_actuator);
     client.subscribe(mqtt_config.topic_fan);
     client.subscribe(mqtt_config.topic_sensor);
+
     const config = JSON.parse(fs.readFileSync('src/config.json', 'utf8'));
     if (config.connection.config_file != `http://${ip_address}:${port}/src/config.json`) {
         console.log("!!! Check device config file address on 'src/config.json' ");
     }
 });
 
-function save_to_db(type, data) {
+
+function save_to_db(type, data, raw = undefined) {
+    // { "value": { "PM2_5": 20, "PM1_0_ATM": 9, "PM10_0_ATM": 23, "VERSION": 18, "ERROR": 0, "CHECKSUM": 598, "PM1_0": 9, "PM10_0": 23, "PM2_5_ATM": 20, "PCNT_0_5": 704, "PCNT_5_0": 0, "FRAME_LENGTH": 28, "PCNT_2_5": 0, "PCNT_1_0": 97, "PCNT_10_0": 0, "PCNT_0_3": 779 }, "type": "dust" }
+
     if (type == undefined || data == undefined) {
         console.log('[ERROR] save_to_db: type or data is undefined');
         return;
     }
-    datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const sql = `INSERT INTO ${type}_data (date_time,measured_${type}) VALUE ("${datetime}",${data})`;
-    console.log(" " + sql);
+
+    const datetime = moment().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
+    console.log(datetime);
+    let sql = "";
+    if (type == "dust") {
+        const pms = JSON.parse(raw);
+        const columns = Object.keys(pms).join(",");
+        const values = Object.values(pms).map(value => typeof value === "string" ? `'${value}'` : value).join(",");
+        sql = `INSERT INTO ${type}_data (${columns},date_time, measured_${type}) VALUES (${values},"${datetime}",${data})`;
+    } else {
+        sql = `INSERT INTO ${type}_data (date_time, measured_${type}) VALUES ("${datetime}",${data})`;
+    }
+    console.log("SQL : " + sql);
     connection.query(sql, data, (error, results, fields) => {
         if (error) throw error;
     });
 }
+
 
 client.on("message", async (topic, message) => {
     try {
@@ -119,7 +136,13 @@ client.on("message", async (topic, message) => {
             const json = JSON.parse(msgStr);
             const type = json.type;
             const value = json.value;
-            save_to_db(type, value);
+
+            if (json.hasOwnProperty("raw")) {
+                const raw = json.raw;
+                save_to_db(type, value, raw);
+            } else {
+                save_to_db(type, value);
+            }
         }
     } catch (error) {
         console.error("[ERROR] client.on.message");
@@ -127,7 +150,7 @@ client.on("message", async (topic, message) => {
     } finally {
         // console.error("finally");
     }
-    return
+    return;
 });
 
 client.on("error", (error) => {
