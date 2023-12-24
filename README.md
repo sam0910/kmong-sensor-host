@@ -16,63 +16,17 @@ Disallow root login remotely? [Y/n] n
 Reload privilege tables now? [Y/n] y
 ```
 ##### Create database and tables
+> [!NOTE]
+> * dust_data 테이블에 추가 컬럼(RAW DATA 관련) 있습니다.
+> * [mysql_batch.sql](./mysql_batch.sql) 파일 참조 하셔서 테이블 생성 하세요.
 ```
-> mysql -u root -p
+// 테이블 자동 생성 스크립트, 결과는 mysql_batch.log 파일에 저장됩니다.
+> mysql -u root -p < mysql_batch.sql > mysql_batch.log
 Enter password:🔑thermal1215@R
-
-mysql> CREATE DATABASE thermaldb;
-mysql> USE thermaldb;
-mysql> CREATE TABLE IF NOT EXISTS `temp_data` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `measured_temp` FLOAT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) CHARSET=utf8;
-mysql> CREATE TABLE IF NOT EXISTS `humi_data` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `measured_humi` FLOAT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) CHARSET=utf8;
-mysql> CREATE TABLE IF NOT EXISTS `co2_data` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `measured_co2` FLOAT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) CHARSET=utf8;
-mysql> CREATE TABLE IF NOT EXISTS `dust_data` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `measured_dust` FLOAT DEFAULT NULL,
-  `PM1_0` FLOAT DEFAULT NULL,
-  `PM2_5` FLOAT DEFAULT NULL,
-  `PM10_0` FLOAT DEFAULT NULL,
-  `PM1_0_ATM` FLOAT DEFAULT NULL,
-  `PM2_5_ATM` FLOAT DEFAULT NULL,
-  `PM10_0_ATM` FLOAT DEFAULT NULL,
-  `PCNT_0_3` FLOAT DEFAULT NULL,
-  `PCNT_0_5` FLOAT DEFAULT NULL,
-  `PCNT_1_0` FLOAT DEFAULT NULL,
-  `PCNT_2_5` FLOAT DEFAULT NULL,
-  `PCNT_5_0` FLOAT DEFAULT NULL,
-  `PCNT_10_0` FLOAT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) CHARSET=utf8;
-mysql> CREATE TABLE IF NOT EXISTS `pres_data` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_time` DATETIME NULL DEFAULT NULL,
-  `measured_pres` FLOAT DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) CHARSET=utf8;
-mysql> SHOW TABLES;
-mysql> DESC temp_data;
-mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'thermal1215@R';
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'thermal1215@R';
-mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'thermal1215@R';
-mysql> FLUSH PRIVILEGES;
-mysql> QUIT
 ```
+> [!NOTE]
+> * [config/config_mysql.js](config/config_mysql.sql)의 접속 계정에 맞게 테이블 접근 권한 설정 요망. 
+
 ## :rocket: Install Mosquitto MQTT broker
 #####  Install
 ```
