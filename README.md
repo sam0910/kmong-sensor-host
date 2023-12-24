@@ -119,9 +119,9 @@ limit     : nc|no, default: nc
 ```
 ######  HTTP로 명령 전송시
 ```
-URL: http://192.168.0.101:8080/actuator
+URL: http://$SERVER_IP:8080/actuator
 GET: direction=forward&duration=1200&limit=nc
-예시: http://192.168.0.101:8080/actuator?direction=forward&duration=1200&limit=nc
+예시: http://$SERVER_IP:8080/actuator?direction=forward&duration=1200&limit=nc
 ```
 ######  MQTT로 명령 전송시
 ```
@@ -139,9 +139,9 @@ speed: 1|2|3|4|5, default: 0
 ```
 #####  HTTP로 명령 전송시
 ```
-URL: http://192.168.0.101:8080/fan
+URL: http://$SERVER_IP:8080/fan
 GET: power=on&speed=2
-예시: http://192.168.0.101:8080/fan?power=on&speed=2
+예시: http://$SERVER_IP:8080/fan?power=on&speed=2
 ```
 #####  MQTT로 명령 전송시
 ```
@@ -195,7 +195,7 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
         "mqtt_password": "pass1234",
         "wifi_ssid": "thermal-AP",
         "wifi_password": "thermal1215",
-        "config_file": "http://192.168.0.101/src/config.json"
+        "config_file": "http://$SERVER_IP:8080/src/config.json"
     },
     // 팬 스피드 설정 (Hz)
     "fan": {
