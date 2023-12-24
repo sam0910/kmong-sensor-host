@@ -1,24 +1,51 @@
+const version = "0.9.0";
+const os = require('os');
+const fs = require('fs');
 const express = require("express");
 const app = express();
 const mqtt = require("mqtt");
 const cors = require('cors');
 const port = 8080;
 const mysql = require('mysql');
-const dbconfig = require('./config_mysql.js');
-const mqtt_config = require('./config_mqtt.js');
+const dbconfig = require('../config/config_mysql.js');
+const mqtt_config = require('../config/config_mqtt.js');
 const connection = mysql.createConnection(dbconfig);
 connection.connect();
-
-
 app.use(cors());
 
-app.listen(port, () => {
-    console.log(`Sensor-host app listening on port ${port} `);
+const ifaces = os.networkInterfaces();
+let ip_address = '';
+Object.keys(ifaces).forEach(function (ifname) {
+    let alias = 0;
+    ifaces[ifname].forEach(function (iface) {
+        if ('IPv4' !== iface.family || iface.internal !== false) {
+            return;
+        }
+        if (alias >= 1) {
+            ip_address = iface.address;
+        } else {
+            ip_address = iface.address;
+        }
+        ++alias;
+    });
 });
+
+connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+    if (error) throw error;
+    console.log('*** MySQL  connected: true, ', results[0].solution);
+});
+
+app.listen(port, () => {
+    console.log(`*** Server listening: http://${ip_address}:${port} (v${version})`);
+});
+
+// load src/config.json file
+
+
 
 app.get("/", (req, res) => {
     res.send(`
-        <h1>Control panel</h1>
+        <h3>Server IP:${ip_address}:${port}, v${version}</h3>
     `);
 });
 
@@ -50,8 +77,7 @@ app.get("/fan", async (req, res) => {
 
 app.use('/src', express.static('src'))
 
-
-const client = mqtt.connect(mqtt_config.mqtt_host, {
+const client = mqtt.connect("mqtt://" + mqtt_config.mqtt_host, {
     username: mqtt_config.mqtt_username,
     password: mqtt_config.mqtt_password,
     port: mqtt_config.mqtt_port,
@@ -59,12 +85,16 @@ const client = mqtt.connect(mqtt_config.mqtt_host, {
 });
 
 client.on("connect", () => {
-    console.log(`- MQTT connected: ${client.connected} `);
+    console.log(`*** MQTT   connected: ${client.connected}, ${mqtt_config.mqtt_host}:${mqtt_config.mqtt_port} `);
     if (client.connected === true) {
     }
     client.subscribe(mqtt_config.topic_actuator);
     client.subscribe(mqtt_config.topic_fan);
     client.subscribe(mqtt_config.topic_sensor);
+    const config = JSON.parse(fs.readFileSync('src/config.json', 'utf8'));
+    if (config.connection.config_file != `http://${ip_address}:${port}/src/config.json`) {
+        console.log("!!! Check device config file address on 'src/config.json' ");
+    }
 });
 
 function save_to_db(type, data) {

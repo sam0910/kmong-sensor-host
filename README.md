@@ -109,15 +109,15 @@ PUB_TOPIC=cmd/actuator
 MQTT_USER=mqtt_user
 MQTT_PASSWORD=pass1234
 mosquitto_sub -h $MQTT_HOST -p $MQTT_PORT -t $SUB_TOPIC -u $MQTT_USER -P $MQTT_PASSWORD
-mosquitto_pub -h $MQTT_HOST -p $MQTT_PORT -t $PUB_TOPIC -u $MQTT_USER -P $MQTT_PASSWORD
+mosquitto_pub -h $MQTT_HOST -p $MQTT_PORT -t $PUB_TOPIC -u $MQTT_USER -P $MQTT_PASSWORD -m "MSG PAYLOAD" 
 ```
 
 ## :rocket: 서버 다운로드 및 실행
 #### 설정파일 수정
 ```
 기기 설정파일  : src/config.json
-MQTT 설정파일 : src/config_mqtt.js
-MYSQL설정파일 : src/config_mysql.js
+MQTT 설정파일 : config/config_mqtt.js
+MYSQL설정파일 : config/config_mysql.js
 ```
 > [src/config.json](src/config.json) 파일은 기기 설정 파일로 전원 ON시 자동으로 기기로 다운로드 됩니다.
 서버 http://192.168.0.101/src/config.json 로 접근가능합니다.
@@ -133,7 +133,16 @@ npm start
 ```
 
 ## :rocket: Actuator Control
-> 지정한 방향(direction)으로 지정한 시간(duration-밀리초)동안 작동하고 정지
+> [!NOTE]
+> * 지정한 방향(direction)으로 지정한 시간(duration-밀리초)동안 작동하고 정지
+> * 속도는 5mm/s @ 100Hz (제조사 스펙상 최대 속도 6mm/s)
+
+
+> [!WARNING]
+> * 30초 사용후 -> 5분간 정지
+> * 1분  사용후 -> 9분간 정지
+> * 2분  사용후 -> 18분간 정지 (2분 초과시 모터 파손 가능성 있음)
+
 ```
 direction : forward|backward|stop, default: stop
 duration  : miliseconds, default: 0

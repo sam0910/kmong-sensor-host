@@ -4,6 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
+        "mysql": "brew services restart mysql && brew services restart mosquitto",
         "start": "node ./src/index.js"
     },
     "dependencies": {

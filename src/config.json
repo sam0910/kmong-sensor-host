@@ -7,13 +7,13 @@
         "humidity": 60
     },
     "connection": {
-        "mqtt_host": "192.168.0.101",
+        "mqtt_host": "192.168.0.30",
         "mqtt_port": 1883,
         "mqtt_id": "mqtt_user",
         "mqtt_password": "pass1234",
         "wifi_ssid": "thermal-AP",
         "wifi_password": "thermal1215",
-        "config_file": "http://192.168.0.101/src/config.json"
+        "config_file": "http://192.168.0.30:8080/src/config.json"
     },
     "fan": {
         "speed_1_freq": 1000,
@@ -23,6 +23,8 @@
         "speed_5_freq": 20000
     },
     "actuator": {
-        "max_freq": "NC"
-    }
+        "max_freq": 100
+    },
+    "version": "0.9.0",
+    "version_note": "LOCALSERVER"
 }
