@@ -174,6 +174,9 @@ GET: direction=forward&duration=1200&limit=nc
 TOPIC  : cmd/actuator
 PAYLOAD: direction=forward&duration=1200&limit=nc
 ```
+> [!NOTE]
+> * direction=stop(정지명령) 일때 duration, limit 값은 무시 또는 미지정 가능.
+> * forward(전진), backward(후진) 명령시 duration, limit 값 필수 지정
 ## :rocket: Fan Control
 ```
 power: on|off, default: off
@@ -190,10 +193,13 @@ GET: power=on&speed=2
 TOPIC: cmd/fan
 PAYLOAD: power=on&speed=2
 ```
+> [!NOTE]
+> * power=on 일때 speed 값 필수 지정
+> * power=off 일때 speed 값은 무시 또는 미지정 가능.
 ## :rocket: 센서값 단위
-> 온도 : ℃
-> 습도 : %
-> 이산화탄소 : ppm
+> - 온도 : ℃
+> - 습도 : %
+> - 이산화탄소 : ppm
 ```
 measured_dust 컬럼에 공기질지표 AQI 값이 저장됩니다.
 Dictionary Key별 측정 데이터는 아래와 같습니다.
@@ -246,9 +252,10 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
     },
     // 액추에이터 모터 회전속도 설정 (Hz)
     "actuator": {
-        "max_freq": 1000
-    }
-
+        "max_freq": 100
+    },
+    "version": "0.9.0",
+    "version_note": "LOCALSERVER"
 }
 ```
 ## 디바이스(센서보드, 액츄에이터보드) 설정 방법
