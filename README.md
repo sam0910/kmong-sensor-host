@@ -76,21 +76,25 @@ mysql> QUIT
 ## :rocket: Install Mosquitto MQTT broker
 #####  Install
 ```
-brew install mosquitto
+> brew install mosquitto
 
 //현재폴더에 passwd.secret 파일명으로 유저 mqtt_user , 패스워드 pass1234 설정파일 생성
-mosquitto_passwd -c passwd.secret mqtt_user
+> mosquitto_passwd -c passwd.secret mqtt_user
+  enter password : pass1234
+  Re-enter password : pass1234
 
-brew services stop mosquitto
-killall mosquitto
-code $HOMEBREW_PREFIX/etc/mosquitto/mosquitto.conf
+> brew services stop mosquitto
+> killall mosquitto
+> code $HOMEBREW_PREFIX/etc/mosquitto/mosquitto.conf
 ```
 mosquitto.conf 파일 열어서 아래 내용 추가
-(패스워드 파일 경로는 위에서 생성한 파일의 경로로 수정)
 ```
-allow_anonymous false
+allow_anonymous true
+listener 1883
 password_file /Users/$USER/...../kmong-sensor-host/passwd.secret
 ```
+- 패스워드 파일 경로(/Users/$USER/.....)는 위에서 생성한 passwd.secret 파일의 경로로 수정)
+- allow_anonymous true|false, 유저 아이디/패스워드 사용 유무
 
 
 
@@ -113,24 +117,33 @@ mosquitto_pub -h $MQTT_HOST -p $MQTT_PORT -t $PUB_TOPIC -u $MQTT_USER -P $MQTT_P
 ```
 
 ## :rocket: 서버 다운로드 및 실행
-#### 설정파일 수정
+
+#### 1. 서버 방화벽 설정
+<img width="715" alt="firewall_mac" src="https://github.com/sam0910/kmong-sensor-host/assets/9714538/cb9b068a-d304-4d16-ab99-30480cbffca1">
+
+#### 2. Git clone
+```
+git clone https://github.com/sam0910/kmong-sensor-host
+cd kmong-sensor-host
+npm install
+```
+
+#### 3. 설정파일 수정
 ```
 기기 설정파일  : src/config.json
 MQTT 설정파일 : config/config_mqtt.js
 MYSQL설정파일 : config/config_mysql.js
 ```
-> [src/config.json](src/config.json) 파일은 기기 설정 파일로 전원 ON시 자동으로 기기로 다운로드 됩니다.
-서버 http://192.168.0.101/src/config.json 로 접근가능합니다.
+> - [src/config.json](src/config.json) 파일은 기기 설정 파일로 전원 ON시 자동으로 기기로 다운로드 됩니다.
+> - http://$SERVER_IP:8080/src/config.json 로 접근 가능 합니다.
 
-#### Git clone
+#### 4. 서버 실행
 ```
-git clone https://github.com/sam0910/kmong-sensor-host
-cd kmong-sensor-host
-npm install
-brew services restart mosquitto
-brew services restart mysql
+npm run mysql (mysql 및 mqtt 재시작)
 npm start
 ```
+
+
 
 ## :rocket: Actuator Control
 > [!NOTE]
