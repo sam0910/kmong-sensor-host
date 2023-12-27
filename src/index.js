@@ -110,7 +110,6 @@ function save_to_db(type, data, raw = undefined) {
     }
 
     const datetime = moment().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
-    console.log(datetime);
     let sql = "";
     if (type == "dust") {
         const pms = JSON.parse(raw);
@@ -120,7 +119,7 @@ function save_to_db(type, data, raw = undefined) {
     } else {
         sql = `INSERT INTO ${type}_data (date_time, measured_${type}) VALUES ("${datetime}",${data})`;
     }
-    console.log("SQL : " + sql);
+    console.log(`SQL : ${type}_data -> ${data}`);
     connection.query(sql, data, (error, results, fields) => {
         if (error) throw error;
     });
@@ -131,7 +130,7 @@ client.on("message", async (topic, message) => {
     try {
         const topicStr = topic.toString();
         let msgStr = message.toString();
-        console.log(`- MQTT message: ${topicStr},${msgStr}`);
+        // console.log(`- MQTT message: ${topicStr},${msgStr}`);
         if (topicStr == mqtt_config.topic_sensor) {
             const json = JSON.parse(msgStr);
             const type = json.type;

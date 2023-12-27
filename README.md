@@ -154,6 +154,7 @@ PAYLOAD: power=on&speed=2
 > - 온도 : ℃
 > - 습도 : %
 > - 이산화탄소 : ppm
+> - 대기압 : Pa
 #### dust_data 테이블 추가 컬럼 설명
 ```
 measured_dust 컬럼에 공기질지표 AQI 값이 저장됩니다.
