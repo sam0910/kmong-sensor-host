@@ -230,6 +230,23 @@ PCNT_10_0    | 직경 10.0 마이크로 미터(μm) 이상 입자수, 0.1 리터
 <img width="813" alt="setting" src="https://github.com/sam0910/kmong-sensor-host/assets/9714538/ffca0318-abd0-45e0-bcdb-43900c2f4f96">
 
 
+## 디바이스 파일 업로드
+#### 아래 그림의 붉은 화살표 위치에 USB 연결(UART)
 
+
+```
+cd ./upload
+chmod +x ./upload.sh
+bash ./upload.sh
+
+
+🚀 Port number or ENTER : 
+# /dev/cu.usbserial-뒤의 포트번호 숫자 또는 엔터키(/dev/cu.usbserial-110) 입력
+🚀 Upload file name ? (constants.py): 엔터 입력
+#########################
+# VERSION : 2024-01-02  #
+#########################
+위의 글자 보이면 업로드 완료
+```
 
 
